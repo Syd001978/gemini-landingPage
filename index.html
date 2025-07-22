@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n: Otomatisasi Alur Kerja Fleksibel untuk Era AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* sky-50 */
+            color: #051923;
+        }
+        .section-heading {
+            color: #003554;
+        }
+        .highlight-text {
+            color: #00A6FB;
+        }
+        .btn-primary {
+            background-color: #00A6FB;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0582CA;
+        }
+        .feature-filter-btn {
+            background-color: white;
+            color: #006494;
+            border: 1px solid #E2E8F0;
+            transition: all 0.2s ease-in-out;
+        }
+        .feature-filter-btn.active {
+            background-color: #00A6FB;
+            color: white;
+            border-color: #00A6FB;
+        }
+        .feature-filter-btn:hover:not(.active) {
+            background-color: #E2E8F0;
+        }
+        .feature-card, .use-case-card, .component-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .feature-card:hover, .use-case-card:hover, .component-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .flow-diagram-arrow {
+            color: #0582CA;
+        }
+        .llm-input-area {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .llm-output-area {
+            background-color: #e0f2fe; /* sky-100 */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #003554;
+            font-style: italic;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #00A6FB;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/90 backdrop-blur-lg shadow-sm py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold section-heading">n8n.io</a>
+            <nav class="hidden md:block">
+                <ul class="flex space-x-6">
+                    <li><a href="#apa-itu" class="text-gray-600 hover:text-highlight-text font-medium">Apa Itu?</a></li>
+                    <li><a href="#mengapa-n8n" class="text-gray-600 hover:text-highlight-text font-medium">Mengapa n8n?</a></li>
+                    <li><a href="#fitur-utama" class="text-gray-600 hover:text-highlight-text font-medium">Fitur Utama</a></li>
+                    <li><a href="#kelebihan-kekurangan" class="text-gray-600 hover:text-highlight-text font-medium">Kelebihan & Kekurangan</a></li>
+                    <li><a href="#komponen-tools" class="text-gray-600 hover:text-highlight-text font-medium">Komponen & Tools</a></li>
+                    <li><a href="#llm-fitur" class="text-gray-600 hover:text-highlight-text font-medium">Fitur AI ✨</a></li>
+                    <li><a href="#kasus-penggunaan" class="text-gray-600 hover:text-highlight-text font-medium">Kasus Penggunaan</a></li>
+                </ul>
+            </nav>
+            <a href="#" class="btn-primary px-6 py-2 rounded-full font-semibold hidden md:block">Mulai Sekarang</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="py-20 md:py-32 text-center bg-gradient-to-br from-[#00A6FB] to-[#006494] text-white">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                    Otomatisasi Alur Kerja Anda, <br class="hidden md:block">Didefinisikan Ulang.
+                </h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-10">
+                    n8n adalah platform otomatisasi sumber terbuka yang memberdayakan tim teknis untuk membangun agen AI multi-langkah dan mengintegrasikan aplikasi dengan fleksibilitas tak tertandingi.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#" class="btn-primary px-8 py-3 rounded-full text-lg font-bold shadow-lg">Jelajahi n8n</a>
+                    <a href="#" class="text-white hover:text-gray-200 font-semibold text-lg flex items-center">
+                        Pelajari Lebih Lanjut <span class="ml-2 text-xl">→</span>
+                    </a>
+                </div>
+                <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <p class="text-4xl font-bold">1090+</p>
+                        <p class="mt-2 text-lg opacity-80">Integrasi Aplikasi</p>
+                    </div>
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm">
+                        <p class="text-4xl font-bold">200K+</p>
+                        <p class="mt-2 text-lg opacity-80">Anggota Komunitas</p>
+                    </div>
+                    <div class="bg-white/20 p-6 rounded-xl backdrop-blur-sm col-span-1 sm:col-span-2 lg:col-span-1">
+                        <p class="text-4xl font-bold">Open Source</p>
+                        <p class="mt-2 text-lg opacity-80">Kontrol Penuh, Self-Hostable</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="apa-itu" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold section-heading mb-6">Apa Itu n8n?</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-700 mb-12">
+                    n8n adalah platform otomatisasi alur kerja sumber terbuka yang berfungsi sebagai penghubung kuat antara berbagai aplikasi dan layanan. Ini adalah alat **Extract, Transform, Load (ETL)** yang memungkinkan aliran data mulus dan otomatisasi proses bisnis yang kompleks.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-highlight-text mb-4">Pendekatan Hibrida: Low-Code & Full-Code</h3>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Salah satu karakteristik paling menonjol dari n8n adalah pendekatannya yang hibrida. Ini menggabungkan kecepatan pembangunan alur kerja visual melalui antarmuka **drag-and-drop** yang ramah pengguna (sering disebut sebagai *low-code* atau *no-code*) dengan fleksibilitas penuh untuk menulis **kode kustom** menggunakan JavaScript atau Python ketika logika yang lebih spesifik atau kompleks diperlukan.
+                        </p>
+                        <p class="text-gray-600 text-lg leading-relaxed mt-4">
+                            Pendekatan ini memberdayakan tim teknis untuk membangun agen AI multi-langkah dan mengintegrasikan aplikasi dengan tingkat kebebasan yang lebih besar dibandingkan banyak alat otomatisasi lainnya di pasar.
+                        </p>
+                    </div>
+                    <div class="bg-gray-100 p-8 rounded-xl shadow-lg">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🎨</div>
+                            <h4 class="text-xl font-semibold text-section-heading">Visual Editor</h4>
+                            <p class="text-gray-600">Bangun alur kerja dengan mudah secara visual.</p>
+                        </div>
+                        <div class="text-center my-6">
+                            <span class="text-5xl text-highlight-text font-bold">⇕</span>
+                            <p class="text-gray-500 text-sm mt-1">Fleksibilitas Penuh</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">💻</div>
+                            <h4 class="text-xl font-semibold text-section-heading">Custom Code</h4>
+                            <p class="text-gray-600">Tulis JavaScript/Python untuk logika lanjutan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mengapa-n8n" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold section-heading">Mengapa Memilih n8n? Keunggulan Biaya yang Revolusioner</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-700">
+                        Salah satu pembeda utama n8n adalah model harganya. Tidak seperti platform lain yang menagih per "tugas" atau "operasi", n8n menagih per "eksekusi alur kerja" penuh. Ini berarti biaya Anda lebih dapat diprediksi dan seringkali jauh lebih hemat.
+                    </p>
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl">
+                    <div class="chart-container">
+                        <canvas id="pricingChart"></canvas>
+                    </div>
+                    <p class="text-center mt-6 text-sm text-gray-500">
+                        Grafik ini membandingkan biaya relatif untuk alur kerja dengan kompleksitas yang berbeda (jumlah langkah). Perhatikan bagaimana biaya pada model "per operasi" meningkat tajam, sementara n8n tetap efisien.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fitur-utama" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold section-heading">Fitur Utama n8n</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-700">
+                        n8n dikemas dengan fitur-fitur canggih yang dirancang untuk fleksibilitas, kontrol, dan skalabilitas. Jelajahi kemampuan yang paling relevan bagi Anda.
+                    </p>
+                </div>
+                <div class="flex justify-center space-x-3 mb-10 overflow-x-auto pb-2">
+                    <button class="feature-filter-btn active px-5 py-2 rounded-full font-semibold text-sm" data-filter="all">Semua</button>
+                    <button class="feature-filter-btn px-5 py-2 rounded-full font-semibold text-sm" data-filter="fleksibilitas">Fleksibilitas Pembangunan</button>
+                    <button class="feature-filter-btn px-5 py-2 rounded-full font-semibold text-sm" data-filter="ai">Kemampuan AI Lanjutan</button>
+                    <button class="feature-filter-btn px-5 py-2 rounded-full font-semibold text-sm" data-filter="enterprise">Skala & Keamanan Perusahaan</button>
+                </div>
+                <div id="features-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </div>
+        </section>
+
+        <section id="kelebihan-kekurangan" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold section-heading">Kelebihan & Kekurangan</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-700">
+                        Memahami kekuatan dan kelemahan adalah kunci untuk adopsi yang tepat.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-xl">
+                        <h3 class="text-2xl font-bold text-green-600 mb-4 flex items-center"><span class="text-4xl mr-3">👍</span> Kelebihan n8n</h3>
+                        <ul id="pros-list" class="space-y-4 text-gray-700">
+                            <li><strong class="text-section-heading">Kontrol Penuh & Efisiensi Biaya:</strong> Sifat sumber terbuka dan self-hostable.</li>
+                            <li><strong class="text-section-heading">Fleksibilitas Tak Tertandingi:</strong> Kombinasi editor visual dan kode kustom.</li>
+                            <li><strong class="text-section-heading">Model Harga Dapat Diprediksi:</strong> Biaya per "eksekusi" lebih hemat untuk alur kerja kompleks.</li>
+                            <li><strong class="text-section-heading">Komunitas Kuat & Aktif:</strong> Dukungan, template, dan solusi dari komunitas besar.</li>
+                            <li><strong class="text-section-heading">Fitur Siap Perusahaan:</strong> Keamanan (SOC 2, RBAC, SSO), skalabilitas, dan manajemen.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl">
+                        <h3 class="text-2xl font-bold text-red-600 mb-4 flex items-center"><span class="text-4xl mr-3">👎</span> Kekurangan n8n</h3>
+                        <ul id="cons-list" class="space-y-4 text-gray-700">
+                            <li><strong class="text-section-heading">Kurva Pembelajaran Curam:</strong> Membutuhkan pemahaman konsep teknis (JSON, API).</li>
+                            <li><strong class="text-section-heading">Keterbatasan UI Kompleks:</strong> Antarmuka bisa berantakan untuk alur kerja yang sangat besar.</li>
+                            <li><strong class="text-section-heading">Tantangan Debugging:</strong> Pesan kesalahan terkadang kurang jelas.</li>
+                            <li><strong class="text-section-heading">Manajemen Kredensial:</strong> Bisa kurang efisien untuk lingkungan multi-pengguna/lingkungan.</li>
+                            <li><strong class="text-section-heading">Persyaratan Sumber Daya:</strong> Self-hosting dengan AI lokal/volume tinggi membutuhkan sumber daya signifikan.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="komponen-tools" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold section-heading mb-12">Komponen Inti & Tools n8n</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-700 mb-12">
+                    Memahami blok bangunan dasar n8n akan membantu Anda merancang otomatisasi yang kuat.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">📦</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Node</h3>
+                        <p class="mt-2 text-gray-600">Blok bangunan fundamental. Setiap tindakan, operasi, atau integrasi adalah sebuah node.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">🔗</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Workflow</h3>
+                        <p class="mt-2 text-gray-600">Urutan langkah-langkah otomatis yang terhubung oleh node, dimulai oleh pemicu.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">⚡</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Trigger Node</h3>
+                        <p class="mt-2 text-gray-600">Titik awal alur kerja; "mendengarkan" peristiwa atau kondisi tertentu.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">🛠️</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Action Node</h3>
+                        <p class="mt-2 text-gray-600">Melakukan tugas spesifik setelah dipicu atau menerima data dari node sebelumnya.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">🌐</div>
+                        <h3 class="text-xl font-bold text-highlight-text">HTTP Request Node</h3>
+                        <p class="mt-2 text-gray-600">Menghubungkan ke hampir semua layanan dengan REST API, bahkan tanpa node bawaan.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">📝</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Code Node</h3>
+                        <p class="mt-2 text-gray-600">Memberikan fleksibilitas tak terbatas dengan kode kustom JavaScript atau Python.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">🧠</div>
+                        <h3 class="text-xl font-bold text-highlight-text">AI Agents/Nodes</h3>
+                        <p class="mt-2 text-gray-600">Memfasilitasi integrasi dengan model AI untuk tugas-tugas cerdas.</p>
+                    </div>
+                    <div class="bg-gray-100 p-6 rounded-xl shadow-md component-card">
+                        <div class="text-5xl mb-3">📋</div>
+                        <h3 class="text-xl font-bold text-highlight-text">Templates</h3>
+                        <p class="mt-2 text-gray-600">Lebih dari 1700 alur kerja pra-bangun sebagai titik awal cepat.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
+                    <h3 class="text-2xl font-bold section-heading mb-4">Pentingnya & Manajemen Kredensial API</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        **Kredensial API** adalah kunci yang memungkinkan n8n berinteraksi dengan aman dengan aplikasi eksternal (misalnya, Kunci API, Token OAuth). n8n dirancang untuk menyimpan kredensial ini dengan aman melalui **enkripsi** dan memungkinkan **penggunaan kembali** di berbagai alur kerja.
+                    </p>
+                    <p class="text-lg text-gray-700 leading-relaxed mt-4">
+                        Untuk lingkungan perusahaan, n8n mendukung **integrasi dengan sistem rahasia eksternal** seperti AWS Secrets Manager, yang meningkatkan keamanan dan kepatuhan. Meskipun demikian, manajemen kredensial dalam lingkungan multi-pengguna atau multi-lingkungan dapat menjadi tantangan, memerlukan perencanaan yang cermat.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- New LLM Features Section -->
+        <section id="llm-fitur" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold section-heading">Fitur AI Interaktif ✨</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-700">
+                        Jelajahi potensi otomatisasi cerdas dengan fitur-fitur yang didukung oleh Gemini API.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Workflow Idea Generator -->
+                    <div class="llm-input-area">
+                        <h3 class="text-2xl font-bold text-highlight-text mb-4">Ide Otomatisasi Alur Kerja ✨</h3>
+                        <p class="text-gray-600 mb-4">
+                            Masukkan beberapa kata kunci (misalnya, 'pemasaran', 'CRM', 'email') dan dapatkan ide alur kerja n8n yang inovatif yang didukung oleh AI.
+                        </p>
+                        <textarea id="workflowIdeaInput" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-text" rows="3" placeholder="Contoh: Otomatisasi penjualan, notifikasi tim, manajemen data"></textarea>
+                        <button id="generateWorkflowIdeaBtn" class="btn-primary px-6 py-2 rounded-full font-semibold mt-4 w-full">Hasilkan Ide Alur Kerja</button>
+                        <div id="workflowIdeaOutput" class="llm-output-area mt-6">
+                            Ide alur kerja akan muncul di sini...
+                        </div>
+                    </div>
+
+                    <!-- Node Explainer -->
+                    <div class="llm-input-area">
+                        <h3 class="text-2xl font-bold text-highlight-text mb-4">Penjelasan Node Instan ✨</h3>
+                        <p class="text-gray-600 mb-4">
+                            Ingin tahu lebih banyak tentang node n8n tertentu? Masukkan nama node (misalnya, 'HTTP Request Node') dan dapatkan penjelasan singkat.
+                        </p>
+                        <input type="text" id="nodeExplainerInput" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-text" placeholder="Contoh: Trigger Node, Code Node">
+                        <button id="getNodeExplanationBtn" class="btn-primary px-6 py-2 rounded-full font-semibold mt-4 w-full">Dapatkan Penjelasan Node</button>
+                        <div id="nodeExplanationOutput" class="llm-output-area mt-6">
+                            Penjelasan node akan muncul di sini...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kasus-penggunaan" class="py-16 md:py-24 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold section-heading">Kasus Penggunaan n8n dalam Aksi</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-700">
+                        Fleksibilitas n8n memungkinkannya untuk diterapkan di berbagai domain, dari operasi IT hingga otomatisasi personal yang kreatif.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">🚀</div>
+                        <h3 class="text-xl font-bold text-[#006494]">ITOps & DevOps</h3>
+                        <p class="mt-2 text-gray-600">Pemantauan server otomatis, on-boarding karyawan, memperkaya tiket insiden keamanan.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">📈</div>
+                        <h3 class="text-xl font-bold text-[#006494]">Penjualan & CRM</h3>
+                        <p class="mt-2 text-gray-600">Sinkronisasi prospek ke CRM, otomatisasi pembuatan faktur, pelacakan interaksi pelanggan.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">📢</div>
+                        <h3 class="text-xl font-bold text-[#006494]">Pemasaran</h3>
+                        <p class="mt-2 text-gray-600">Posting konten terjadwal ke media sosial, laporan kampanye AI, respons pesan otomatis.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">🔄</div>
+                        <h3 class="text-xl font-bold text-[#006494]">Sinkronisasi Data</h3>
+                        <p class="mt-2 text-gray-600">Menjaga data tetap sinkron antar database (MySQL, Postgres) atau aplikasi (Airtable, Sheets).</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">🤖</div>
+                        <h3 class="text-xl font-bold text-[#006494]">Otomatisasi AI</h3>
+                        <p class="mt-2 text-gray-600">Membangun bot Telegram pribadi, meringkas rekaman suara, menjawab pertanyaan pelanggan cerdas.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-lg use-case-card">
+                        <div class="text-4xl mb-3">🛍️</div>
+                        <h3 class="text-xl font-bold text-[#006494]">E-commerce</h3>
+                        <p class="mt-2 text-gray-600">Manajemen inventaris otomatis, pemrosesan pesanan dari WooCommerce, program loyalitas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 md:py-24 text-center bg-gradient-to-br from-[#006494] to-[#003554] text-white">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Siap Mengubah Otomatisasi Anda?</h2>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto opacity-90 mb-10">
+                    Bergabunglah dengan ribuan tim yang telah memberdayakan alur kerja mereka dengan n8n. Mulai otomatisasi Anda hari ini!
+                </p>
+                <a href="#" class="btn-primary px-10 py-4 rounded-full text-xl font-bold shadow-lg">Mulai Otomatisasi Sekarang</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#003554] text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2024 Analisis n8n. Dibuat untuk tujuan edukasi. Bukan situs web resmi n8n.</p>
+            <p class="text-sm opacity-70 mt-1">Untuk informasi lebih lanjut, kunjungi <a href="https://n8n.io" target="_blank" class="underline hover:text-highlight-text">n8n.io</a></p>
+        </div>
+    </footer>
+
+    <script>
+        const featuresData = [
+            { title: 'Editor Visual Intuitif', category: 'fleksibilitas', description: 'Bangun alur kerja secara visual dengan antarmuka kanvas drag-and-drop.' },
+            { title: 'Dukungan Kode Kustom', category: 'fleksibilitas', description: 'Tulis logika kustom dengan JavaScript atau Python langsung di alur kerja.' },
+            { title: 'Logika Alur Kerja Tingkat Lanjut', category: 'fleksibilitas', description: 'Gunakan node seperti IF, Switch, Loop untuk otomatisasi kompleks.' },
+            { title: 'Node Permintaan HTTP Universal', category: 'fleksibilitas', description: 'Hubungkan ke hampir semua layanan dengan REST API, bahkan tanpa integrasi bawaan.' },
+            { title: 'Pembangunan Agen AI Multi-Langkah', category: 'ai', description: 'Rancang agen AI canggih untuk meringkas konten, menjawab pertanyaan, atau mengubah bahasa alami.' },
+            { title: 'Kontrol Manusia (Human-in-the-Loop)', category: 'ai', description: 'Tambahkan titik henti untuk persetujuan manual, memastikan manusia tetap memegang kendali.' },
+            { title: 'Validasi Output AI', category: 'ai', description: 'Terapkan aturan untuk memastikan respons AI tetap terstruktur dan relevan.' },
+            { title: 'Self-Hosting & Kontrol Data', category: 'enterprise', description: 'Dapatkan kontrol penuh atas data dan infrastruktur Anda dengan opsi self-hosting.' },
+            { title: 'Skalabilitas & Kinerja Tinggi', category: 'enterprise', description: 'Proses ribuan eksekusi dengan mode antrean untuk beban kerja tinggi.' },
+            { title: 'Keamanan Tingkat Perusahaan', category: 'enterprise', description: 'Fitur SOC 2, RBAC, SSO, dan manajemen rahasia terenkripsi.' },
+            { title: 'Debugging Cepat & Data Replay', category: 'fleksibilitas', description: 'Uji ulang alur kerja tanpa memanggil API eksternal menggunakan data yang disimpan.' },
+            { title: 'Ekosistem Integrasi Luas', category: 'fleksibilitas', description: 'Manfaatkan lebih dari 1090 node integrasi yang telah dibuat sebelumnya.' }
+        ];
+
+        const wrapLabel = (label, maxWidth = 16) => {
+            if (typeof label !== 'string' || label.length <= maxWidth) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctxPricing = document.getElementById('pricingChart').getContext('2d');
+            new Chart(ctxPricing, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        wrapLabel('Alur Kerja Sederhana (5 langkah)'),
+                        wrapLabel('Alur Kerja Sedang (15 langkah)'),
+                        wrapLabel('Alur Kerja Kompleks (30 langkah)')
+                    ],
+                    datasets: [
+                        {
+                            label: 'n8n (Model per Eksekusi)',
+                            data: [10, 10, 10],
+                            backgroundColor: '#0582CA',
+                            borderColor: '#006494',
+                            borderWidth: 2,
+                            borderRadius: 5,
+                        },
+                        {
+                            label: 'Kompetitor (Model per Operasi)',
+                            data: [50, 150, 300],
+                            backgroundColor: '#00A6FB',
+                            borderColor: '#0582CA',
+                            borderWidth: 2,
+                            borderRadius: 5,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Estimasi Biaya Relatif'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                      return label.join(' ');
+                                    } else {
+                                      return label;
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const featuresGrid = document.getElementById('features-grid');
+            const featureFilterBtns = document.querySelectorAll('.feature-filter-btn');
+
+            function renderFeatures(filter = 'all') {
+                featuresGrid.innerHTML = '';
+                const filteredFeatures = filter === 'all'
+                    ? featuresData
+                    : featuresData.filter(f => f.category === filter);
+
+                filteredFeatures.forEach(feature => {
+                    const card = document.createElement('div');
+                    card.className = 'feature-card bg-white p-6 rounded-xl shadow-lg';
+                    card.innerHTML = `
+                        <h3 class="font-semibold text-lg text-section-heading mb-2">${feature.title}</h3>
+                        <p class="text-gray-600">${feature.description}</p>
+                    `;
+                    featuresGrid.appendChild(card);
+                });
+            }
+
+            featureFilterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    featureFilterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderFeatures(btn.dataset.filter);
+                });
+            });
+
+            renderFeatures('all');
+
+
+            // LLM Integration
+            const workflowIdeaInput = document.getElementById('workflowIdeaInput');
+            const generateWorkflowIdeaBtn = document.getElementById('generateWorkflowIdeaBtn');
+            const workflowIdeaOutput = document.getElementById('workflowIdeaOutput');
+
+            const nodeExplainerInput = document.getElementById('nodeExplainerInput');
+            const getNodeExplanationBtn = document.getElementById('getNodeExplanationBtn');
+            const nodeExplanationOutput = document.getElementById('nodeExplanationOutput');
+
+            async function callGeminiAPI(prompt, outputElement) {
+                outputElement.innerHTML = '<div class="loading-spinner"></div>';
+                outputElement.style.fontStyle = 'normal';
+                outputElement.style.textAlign = 'center';
+                outputElement.style.justifyContent = 'center';
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        outputElement.innerHTML = text.replace(/\n/g, '<br>'); // Preserve newlines
+                        outputElement.style.fontStyle = 'normal';
+                        outputElement.style.textAlign = 'left';
+                        outputElement.style.justifyContent = 'flex-start';
+                    } else {
+                        outputElement.innerHTML = 'Maaf, tidak dapat menghasilkan respons. Silakan coba lagi.';
+                        outputElement.style.fontStyle = 'italic';
+                        outputElement.style.textAlign = 'center';
+                        outputElement.style.justifyContent = 'center';
+                    }
+                } catch (error) {
+                    console.error('Error calling Gemini API:', error);
+                    outputElement.innerHTML = 'Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.';
+                    outputElement.style.fontStyle = 'italic';
+                    outputElement.style.textAlign = 'center';
+                    outputElement.style.justifyContent = 'center';
+                }
+            }
+
+            generateWorkflowIdeaBtn.addEventListener('click', () => {
+                const keywords = workflowIdeaInput.value.trim();
+                if (keywords) {
+                    const prompt = `Hasilkan 3-5 ide alur kerja n8n yang inovatif berdasarkan kata kunci berikut: "${keywords}". Untuk setiap ide, berikan judul singkat dan deskripsi 1-2 kalimat. Format sebagai daftar bernomor.`;
+                    callGeminiAPI(prompt, workflowIdeaOutput);
+                } else {
+                    workflowIdeaOutput.innerHTML = 'Mohon masukkan kata kunci untuk menghasilkan ide alur kerja.';
+                    workflowIdeaOutput.style.fontStyle = 'italic';
+                    workflowIdeaOutput.style.textAlign = 'center';
+                    workflowIdeaOutput.style.justifyContent = 'center';
+                }
+            });
+
+            getNodeExplanationBtn.addEventListener('click', () => {
+                const nodeName = nodeExplainerInput.value.trim();
+                if (nodeName) {
+                    const prompt = `Berikan penjelasan singkat dan padat (maksimal 3 kalimat) tentang apa itu "${nodeName}" di n8n dan fungsi utamanya. Jika tidak ada node yang cocok, jelaskan secara umum.`;
+                    callGeminiAPI(prompt, nodeExplanationOutput);
+                } else {
+                    nodeExplanationOutput.innerHTML = 'Mohon masukkan nama node untuk mendapatkan penjelasan.';
+                    nodeExplanationOutput.style.fontStyle = 'italic';
+                    nodeExplanationOutput.style.textAlign = 'center';
+                    nodeExplanationOutput.style.justifyContent = 'center';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
